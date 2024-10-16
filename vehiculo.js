@@ -55,7 +55,7 @@ class Terrestre extends Vehiculo
 function CargarDatosTabla()
 {
     var tabla = document.getElementById("datosTabla");    
-    tabla.innerHTML="";    
+    tabla.innerHTML=""; 
     
     switch(document.getElementById("filter").value)
     {
@@ -240,8 +240,9 @@ function CalcularPromedioVelocidadMaxima()
 }      
 function CrearVehiculo()
 {
-    BorrarDatosTabla();
-    var id = document.getElementById("id").value;
+    BorrarDatosTabla();         
+    var id = document.getElementById("id").value; 
+       
     if (id === null || id === "")
     {
         var modelo = document.getElementById("atributo1").value;
@@ -437,7 +438,7 @@ function ObtenerDatosFila(fila)
 {
     var datos = [];
     var celdas = fila.querySelectorAll('td');
-    document.getElementById("tipoVehiculo").disabled = true;   
+    document.getElementById("tipoVehiculo").disabled = true;  
 
     celdas.forEach(function(celda) 
     {
@@ -556,47 +557,43 @@ function EliminarVehiculo()
     {
         if(vehiculo.id == id)
         {
-            if(tipo == "terrestre")
-            {
-                var terrestre = new Terrestre(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.cantPue, vehiculo.cantRue);
-                for(var i=0; i<listaVehiculos.length; i++)   
-                {
-                    if(listaVehiculos[i].id == terrestre.id)
-                    {
-                        miLista = listaVehiculos.slice(i,1);
-                        miLista.forEach((terrestrito)=>
-                        {
-                            console.log(terrestrito.id + " - " +terrestrito.modelo + " - "+terrestrito.anoFab + " - "+terrestrito.velMax + " - "+terrestrito.cantPue + " - "+terrestrito.cantRue);
-                        });
-                    }
-                }
-                for(var i=0; i<listaTerrestres.length; i++)
-                {
-                    if(terrestre.id == listaTerrestres[i].id)
-                    {
-                        console.log("ACA ELIMINO EL TERRESTRE EN LA LISTA DE TERRESTRES");
-                    }
-                }
-            }            
-            else
-            {
-                var nuevoAereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
-                console.log("ACA ELIMINO EL AEREO");
-                    
-                for(var i=0; i<listaAereos.length; i++)
-                {
-                    if(nuevoAereo.id == listaAereos[i].id)
-                    {
-                        console.log("ACA ELIMINO EL AEREO EN LA LISTA DE AEREOS");
-                    }
-                }                
-            }
+            switch(tipo)           
+            {   
+                case "terrestre":
+                    var terrestreAEliminar = new Terrestre(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.cantPue, vehiculo.cantRue);
+                    listaVehiculos = listaVehiculos.filter((vehiculo)=>!(vehiculo.id == terrestreAEliminar.id));               
+                    listaTerrestres = listaTerrestres.filter((vehiculo)=>!(vehiculo.id == terrestreAEliminar.id));                                        
+                    break;
+                case "aereo":
+                    var aereoAEliminar = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
+                    listaVehiculos = listaVehiculos.filter((vehiculo)=>!(vehiculo.id == aereoAEliminar.id));               
+                    listaAereos = listaAereos.filter((vehiculo)=>!(vehiculo.id == aereoAEliminar.id));  
+                    break;
+            }     
         }
     });
     BorrarDatosTabla();
     CargarDatosTabla();
 }
-
+function ResetearAbm()
+{
+    document.getElementById("id").value="";
+    document.getElementById("atributo1").value="";
+    document.getElementById("atributo2").value="";
+    document.getElementById("atributo3").value="";
+    document.getElementById("atributo4").value="";
+    document.getElementById("atributo5").value="";
+    if(document.getElementById("tipoVehiculo").disabled == true)
+    {
+        document.getElementById("tipoVehiculo").disabled = false;
+    }
+    if(document.getElementById("agregarAbm").disabled == true)
+    {
+        document.getElementById("agregarAbm").disabled = false;
+    }
+    document.getElementById("modificar").disabled = true;
+    document.getElementById("eliminar").disabled = true;
+}
 var jsonVehiculos = '[{"id":14, "modelo":"Ferrari F100", "anoFab":1998, "velMax":400, "cantPue":2, "cantRue":4},{"id":51, "modelo":"Dodge Viper", "anoFab":1991, "velMax":266, "cantPue":2, "cantRue":4},{"id":67, "modelo":"Boeing CH-47 Chinook", "anoFab":1962, "velMax":302, "altMax":6, "autonomia":1200},{"id":666, "modelo":"Aprilia RSV 1000 R", "anoFab":2004, "velMax":280, "cantPue":0, "cantRue":2},{"id":872, "modelo":"Boeing 747-400", "anoFab":1989, "velMax":988, "altMax":13, "autonomia":13450},{"id":742, "modelo":"Cessna CH-1 SkyhookR", "anoFab":1953, "velMax":174, "altMax":3, "autonomia":870}]';
 let listaVehiculos = [];
 listaVehiculos = JSON.parse(jsonVehiculos);
