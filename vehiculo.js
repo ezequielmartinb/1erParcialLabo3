@@ -248,9 +248,9 @@ function CrearVehiculo()
         var anioFabricacion = document.getElementById("atributo2").value;
         var velMax = document.getElementById("atributo3").value;
         var tipoVehiculo = document.getElementById("tipoVehiculo").value;       
-        
         var error = true;
         var existeElVehiculo = false;
+
         if(modelo != null && modelo != "" && anioFabricacion > 1885 && velMax > 0)
         {
             switch(tipoVehiculo)
@@ -266,7 +266,7 @@ function CrearVehiculo()
                             if(vehiculo.modelo == modelo && vehiculo.anoFab == anioFabricacion && vehiculo.velMax == velMax && vehiculo.cantPue == cantPuertas && vehiculo.cantRue == cantRuedas)
                             {
                                 existeElVehiculo = true;
-                                alert("EL AEREO INGRESADO YA EXISTE Y ESTÁ EN LA LISTA");
+                                alert("EL TERRESTRE INGRESADO YA EXISTE Y ESTÁ EN LA LISTA");
 
                             }
                         });
@@ -437,6 +437,7 @@ function ObtenerDatosFila(fila)
 {
     var datos = [];
     var celdas = fila.querySelectorAll('td');
+    document.getElementById("tipoVehiculo").disabled = true;   
 
     celdas.forEach(function(celda) 
     {
@@ -446,8 +447,6 @@ function ObtenerDatosFila(fila)
     if(datos[4] != 'N/A' && datos[5] != 'N/A')
     {
         terrestreSeleccionado = new Terrestre(datos[0],datos[1],datos[2],datos[3],datos[4],datos[5]);
-        console.log(terrestreSeleccionado.toString());
-
         document.getElementById("id").value = datos[0];
         document.getElementById("tipoVehiculo").value = "terrestre";
         document.getElementById("atributo1").value = datos[1];
@@ -456,13 +455,12 @@ function ObtenerDatosFila(fila)
         document.getElementById("atributo4").value = datos[4];
         document.getElementById("atributo5").value = datos[5];
         document.getElementById("formularioABM").style.display = 'block';
-        document.getElementById("aceptar").textContent = "Modificar";
+        document.createElement("button");        
         CambiarAtributos();
     }
     else
     {
         aereoSeleccionado = new Aereo(datos[0],datos[1],datos[2],datos[3],datos[6],datos[7]);
-        console.log(aereoSeleccionado.toString());
         document.getElementById("id").value = datos[0];
         document.getElementById("tipoVehiculo").value = "aereo";
         document.getElementById("atributo1").value = datos[1];
@@ -471,10 +469,132 @@ function ObtenerDatosFila(fila)
         document.getElementById("atributo4").value = datos[6];
         document.getElementById("atributo5").value = datos[7];
         document.getElementById('formularioABM').style.display = 'block';
-        document.getElementById("aceptar").textContent = "Modificar";
         CambiarAtributos();
     }
+    document.getElementById("agregarAbm").disabled = true;  
+    document.getElementById("modificar").disabled = false;    
+    document.getElementById("eliminar").disabled = false;   
+}
+function ModificarVehiculo()
+{
+    let id = document.getElementById("id").value;
+    var tipo = document.getElementById("tipoVehiculo").value;   
+    listaVehiculos.forEach(vehiculo=>
+    {
+        if(vehiculo.id == id)
+        {
+            switch(tipo)
+            {
+                case "terrestre":
+                    var nuevoTerrestre = new Terrestre(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.cantPue, vehiculo.cantRue);
+                    nuevoTerrestre.modelo = document.getElementById("atributo1").value;
+                    nuevoTerrestre.anoFab = document.getElementById("atributo2").value;
+                    nuevoTerrestre.velMax = document.getElementById("atributo3").value;
+                    nuevoTerrestre.cantPue = document.getElementById("atributo4").value;
+                    nuevoTerrestre.cantRue = document.getElementById("atributo5").value;
+
+                    vehiculo.modelo = nuevoTerrestre.modelo;
+                    vehiculo.anoFab = nuevoTerrestre.anoFab;
+                    vehiculo.velMax = nuevoTerrestre.velMax;
+                    vehiculo.cantPue = nuevoTerrestre.cantPue;
+                    vehiculo.cantRue = nuevoTerrestre.cantRue;                        
+                            
+                    for(var i=0; i<listaTerrestres.length; i++)
+                    {
+                        if(nuevoTerrestre.id == listaTerrestres[i].id)
+                        {
+                            listaTerrestres[i].modelo = nuevoTerrestre.modelo;
+                            listaTerrestres[i].anoFab = nuevoTerrestre.anoFab;
+                            listaTerrestres[i].velMax = nuevoTerrestre.velMax;
+                            listaTerrestres[i].cantPue = nuevoTerrestre.cantPue;
+                            listaTerrestres[i].cantRue = nuevoTerrestre.cantRue;
+                            listaTerrestres[i].altMax = "N/A";
+                            listaTerrestres[i].autonomia = "N/A";
+                            break;
+                        }
+                    }
+                    break;
+                case "aereo":
+                    var nuevoAereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
+                    nuevoAereo.modelo = document.getElementById("atributo1").value;
+                    nuevoAereo.anoFab = document.getElementById("atributo2").value;
+                    nuevoAereo.velMax = document.getElementById("atributo3").value;
+                    nuevoAereo.altMax = document.getElementById("atributo4").value;
+                    nuevoAereo.autonomia = document.getElementById("atributo5").value;
+                    
+                    vehiculo.modelo = nuevoAereo.modelo;
+                    vehiculo.anoFab = nuevoAereo.anoFab;
+                    vehiculo.velMax = nuevoAereo.velMax;
+                    vehiculo.altMax = nuevoAereo.altMax;
+                    vehiculo.autonomia = nuevoAereo.autonomia;
+                                
+                    for(var i=0; i<listaAereos.length; i++)
+                    {
+                        if(nuevoAereo.id == listaAereos[i].id)
+                        {
+                            listaAereos[i].modelo = nuevoAereo.modelo;
+                            listaAereos[i].anoFab = nuevoAereo.anoFab;
+                            listaAereos[i].velMax = nuevoAereo.velMax;
+                            listaAereos[i].altMax = nuevoAereo.altMax;
+                            listaAereos[i].autonomia = nuevoAereo.autonomia;                        
+                            break;
+                        }
+                    }
+                    break;    
+            }        
+        }          
+    });
+    BorrarDatosTabla();
+    CargarDatosTabla();
     
+}
+function EliminarVehiculo()
+{
+    let id = document.getElementById("id").value;
+    var tipo = document.getElementById("tipoVehiculo").value;   
+    listaVehiculos.forEach(vehiculo=>
+    {
+        if(vehiculo.id == id)
+        {
+            if(tipo == "terrestre")
+            {
+                var terrestre = new Terrestre(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.cantPue, vehiculo.cantRue);
+                for(var i=0; i<listaVehiculos.length; i++)   
+                {
+                    if(listaVehiculos[i].id == terrestre.id)
+                    {
+                        miLista = listaVehiculos.slice(i,1);
+                        miLista.forEach((terrestrito)=>
+                        {
+                            console.log(terrestrito.id + " - " +terrestrito.modelo + " - "+terrestrito.anoFab + " - "+terrestrito.velMax + " - "+terrestrito.cantPue + " - "+terrestrito.cantRue);
+                        });
+                    }
+                }
+                for(var i=0; i<listaTerrestres.length; i++)
+                {
+                    if(terrestre.id == listaTerrestres[i].id)
+                    {
+                        console.log("ACA ELIMINO EL TERRESTRE EN LA LISTA DE TERRESTRES");
+                    }
+                }
+            }            
+            else
+            {
+                var nuevoAereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
+                console.log("ACA ELIMINO EL AEREO");
+                    
+                for(var i=0; i<listaAereos.length; i++)
+                {
+                    if(nuevoAereo.id == listaAereos[i].id)
+                    {
+                        console.log("ACA ELIMINO EL AEREO EN LA LISTA DE AEREOS");
+                    }
+                }                
+            }
+        }
+    });
+    BorrarDatosTabla();
+    CargarDatosTabla();
 }
 
 var jsonVehiculos = '[{"id":14, "modelo":"Ferrari F100", "anoFab":1998, "velMax":400, "cantPue":2, "cantRue":4},{"id":51, "modelo":"Dodge Viper", "anoFab":1991, "velMax":266, "cantPue":2, "cantRue":4},{"id":67, "modelo":"Boeing CH-47 Chinook", "anoFab":1962, "velMax":302, "altMax":6, "autonomia":1200},{"id":666, "modelo":"Aprilia RSV 1000 R", "anoFab":2004, "velMax":280, "cantPue":0, "cantRue":2},{"id":872, "modelo":"Boeing 747-400", "anoFab":1989, "velMax":988, "altMax":13, "autonomia":13450},{"id":742, "modelo":"Cessna CH-1 SkyhookR", "anoFab":1953, "velMax":174, "altMax":3, "autonomia":870}]';
